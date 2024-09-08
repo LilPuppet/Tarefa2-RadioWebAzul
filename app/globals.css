@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  font-family: 'Poppins', sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .container-custom {
+    @apply flex h-screen font-sans bg-[#0A1128] text-[#A7C7E7];
+  }
+
+  .sidebar-custom {
+    @apply w-[250px] h-full bg-[#001F54] shadow-md p-5 overflow-y-auto fixed top-0 left-0 z-10;
+  }
+
+  .playlist-title {
+    @apply text-sm font-bold mb-5 text-[#A7C7E7] text-center;
+  }
+
+  .list-item-custom {
+    @apply cursor-pointer p-2 mb-2 bg-[#003B6F] rounded text-sm text-[#A7C7E7];
+  }
+
+  .content-custom {
+    @apply flex flex-col items-center justify-center flex-1 p-5 ml-[250px];
+  }
+
+  .frame-text {
+    @apply text-sm text-[#A7C7E7] mb-24;
+  }
+
+  .album-cover {
+    @apply w-[300px] h-[300px] rounded-lg shadow-lg mb-12; /* Ajuste a margem inferior */
+  }
+
+  .track-title {
+    @apply text-lg font-bold mb-2 text-[#A7C7E7]; /* Ajuste a margem superior */
+  }
+
+  .track-artist {
+    @apply text-sm text-[#A7C7E7] mb-4;
+  }
+
+  .track-duration {
+    @apply text-sm text-[#A7C7E7] border-t border-[#A7C7E7] w-[200px] mx-auto pt-1 mb-4;
+  }
+
+  .controls-container {
+    @apply flex flex-row items-center;
+  }
+
+  .play-button {
+    @apply w-[60px] h-[60px] rounded-full bg-[#007BFF] flex items-center justify-center cursor-pointer mx-4;
+  }
+
+  .progress-container {
+    @apply flex flex-col items-center mt-4;
+    width: 80%; /* Ajuste o tamanho conforme necessário */
+    max-width: 400px; /* Limita o comprimento máximo da barra */
+  }
+  
+  .progress-bar {
+    @apply w-full h-2 bg-gray-600 rounded-lg cursor-pointer appearance-none;
+    position: relative;
+  }
+  
+  .progress-bar::-webkit-slider-thumb {
+    @apply w-4 h-4 bg-blue-500 rounded-full;
+    appearance: none;
+  }
+  
+  .progress-bar::-moz-range-thumb {
+    @apply w-4 h-4 bg-blue-500 rounded-full;
+  }
+  
+  .progress-time {
+    @apply text-sm text-[#A7C7E7] mt-2;
+  }
+  
+}
