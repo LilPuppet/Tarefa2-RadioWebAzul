@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
+import { FaPlay, FaPause, FaForward, FaBackward, FaVolumeMute, FaVolumeUp } from 'react-icons/fa';
 import musicData, { Music } from './musicData';
 
 export default function Page() {
-
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [volume, setVolume] = useState(1); // Estado para controlar o volume
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const currentTrack: Music = musicData[currentTrackIndex];
@@ -23,6 +23,12 @@ export default function Page() {
   }, [currentTrackIndex, playing, currentTrack.src]);
 
   useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume; // Atualiza o volume de forma independente
+    }
+  }, [volume]); // Atualiza o volume sempre que ele for alterado
+
+  useEffect(() => {
     const interval = setInterval(() => {
       if (audioRef.current) {
         setProgress(audioRef.current.currentTime);
@@ -32,7 +38,6 @@ export default function Page() {
     return () => clearInterval(interval);
   }, [playing]);
 
-  // Alterna entre play e pause
   const togglePlay = () => {
     if (audioRef.current) {
       if (playing) {
@@ -63,9 +68,13 @@ export default function Page() {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+  };
+
   return (
     <div className="container-custom">
-      {/* Menu Lateral */}
       <aside className="sidebar-custom">
         <h2>Playlist</h2>
         <ul>
@@ -81,17 +90,12 @@ export default function Page() {
         </ul>
       </aside>
   
-      {/* Conteúdo Principal */}
       <div className="content-custom">
-  
-        {/* Frame 2: Capa do álbum */}
         <img src={currentTrack.cover} alt="Álbum" className="album-cover" />
   
-        {/* Frame 3: Informações da faixa */}
         <div className="track-title">{currentTrack.title}</div>
         <div className="track-artist">{currentTrack.artist}</div>
   
-        {/* Barra de progresso */}
         <div className="progress-container">
           <input
             type="range"
@@ -111,7 +115,6 @@ export default function Page() {
           </span>
         </div>
   
-        {/* Frame 4: Controles de reprodução */}
         <div className="controls-container">
           <FaBackward size={24} color="#B2B2B2" onClick={playPreviousTrack} />
           <div onClick={togglePlay} className="play-button">
@@ -119,9 +122,28 @@ export default function Page() {
           </div>
           <FaForward size={24} color="#B2B2B2" onClick={playNextTrack} />
         </div>
-  
-        {/* Elemento de áudio escondido */}
-        <audio ref={audioRef} />
+
+        {/* Volume control estilizado */}
+        <div className="volume-container flex items-center mt-4">
+          {volume === 0 ? (
+            <FaVolumeMute size={24} color="#B2B2B2" />
+          ) : (
+            <FaVolumeUp size={24} color="#B2B2B2" />
+          )}
+          <div className="volume-bar-container relative flex items-center ml-4">
+            <input
+              type="range"
+              className="volume-bar"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={handleVolumeChange}
+            />
+          </div>
+        </div>
+
+        <audio ref={audioRef} onEnded={playNextTrack} />
       </div>
     </div>
   );
