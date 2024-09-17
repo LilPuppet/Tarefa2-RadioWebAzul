@@ -106,4 +106,66 @@ body {
     @apply text-sm text-[#A7C7E7] mt-2;
   }
   
+  --
+/* Barra de Volume */
+.volume-bar-container {
+  position: relative;
+  width: 150px; /* Ajuste a largura conforme necessário */
+  height: 2px; /* Ajuste a altura conforme necessário */
+}
+
+.volume-bar {
+  -webkit-appearance: none; /* Remove o estilo padrão do navegador */
+  width: 100%;
+  height: 2px;
+  background: #1d4ed8; /* Cor da barra de volume (azul) */
+  cursor: pointer;
+  position: relative;
+}
+
+.volume-bar::-webkit-slider-runnable-track {
+  height: 2px;
+  background: #1d4ed8; /* Cor da barra de volume */
+}
+
+.volume-bar::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Remove o estilo padrão do navegador */
+  width: 16px; /* Ajuste o tamanho da bolinha */
+  height: 16px;
+  background: #ffffff; /* Cor da bolinha */
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  z-index: 2; /* Garante que a bolinha esteja acima da barra */
+  margin-top: -7px; /* Ajusta a posição vertical da bolinha */
+}
+
+.volume-bar::-moz-range-track {
+  height: 2px;
+  background: #1d4ed8; /* Cor da barra de volume */
+}
+
+.volume-bar::-moz-range-thumb {
+  width: 16px; /* Ajuste o tamanho da bolinha */
+  height: 16px;
+  background: #ffffff; /* Cor da bolinha */
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.volume-bar::-ms-track {
+  height: 2px;
+  background: #1d4ed8; /* Cor da barra de volume */
+  border-color: transparent;
+  color: transparent;
+}
+
+.volume-bar::-ms-thumb {
+  width: 16px; /* Ajuste o tamanho da bolinha */
+  height: 16px;
+  background: #ffffff; /* Cor da bolinha */
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 }
