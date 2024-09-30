@@ -8,25 +8,45 @@ export default function Page() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [volume, setVolume] = useState(1); // Estado para controlar o volume
+  const [volume, setVolume] = useState(1);
+  const [balance, setBalance] = useState(0); 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const pannerRef = useRef<StereoPannerNode | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
 
   const currentTrack: Music = musicData[currentTrackIndex];
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.src = currentTrack.src;
-      audioRef.current.play(); // Começar automaticamente a tocar quando mudar de faixa
-      setPlaying(true); // Garantir que o estado de playing seja verdadeiro após a mudança de faixa
+    if (!audioContextRef.current && audioRef.current) {
+      const audioContext = new AudioContext();
+      const source = audioContext.createMediaElementSource(audioRef.current);
+      const panner = audioContext.createStereoPanner(); 
+
+      source.connect(panner).connect(audioContext.destination);
+
+      audioContextRef.current = audioContext;
+      pannerRef.current = panner;
     }
-  }, [currentTrackIndex, currentTrack.src]);
-  
+
+    if (pannerRef.current) {
+      pannerRef.current.pan.value = balance;
+    }
+  }, [balance]);
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volume; // Atualiza o volume de forma independente
+      audioRef.current.src = currentTrack.src;
+      if (playing) {
+        audioRef.current.play();
+      }
     }
-  }, [volume]); // Atualiza o volume sempre que ele for alterado
+  }, [currentTrackIndex, playing, currentTrack.src]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -48,7 +68,6 @@ export default function Page() {
       setPlaying(!playing);
     }
   };
-  
 
   const playNextTrack = () => {
     setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % musicData.length);
@@ -74,6 +93,11 @@ export default function Page() {
     setVolume(newVolume);
   };
 
+  const handleBalanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newBalance = parseFloat(e.target.value);
+    setBalance(newBalance);
+  };
+
   return (
     <div className="container-custom">
       <aside className="sidebar-custom">
@@ -90,13 +114,13 @@ export default function Page() {
           ))}
         </ul>
       </aside>
-  
+
       <div className="content-custom">
         <img src={currentTrack.cover} alt="Álbum" className="album-cover" />
-  
+
         <div className="track-title">{currentTrack.title}</div>
         <div className="track-artist">{currentTrack.artist}</div>
-  
+
         <div className="progress-container">
           <input
             type="range"
@@ -115,7 +139,7 @@ export default function Page() {
             {formatTime(progress)} / {formatTime(audioRef.current?.duration || 0)}
           </span>
         </div>
-  
+
         <div className="controls-container">
           <FaBackward size={24} color="#B2B2B2" onClick={playPreviousTrack} />
           <div onClick={togglePlay} className="play-button">
@@ -141,6 +165,24 @@ export default function Page() {
               value={volume}
               onChange={handleVolumeChange}
             />
+          </div>
+        </div>
+
+        {/* Balance control estilizado */}
+        <div className="balance-container flex items-center mt-4">
+          <div className="balance-bar-container relative flex items-center ml-4">
+            <label htmlFor="balance" className="mr-2">L</label>
+            <input
+              type="range"
+              className="balance-bar"
+              id="balance"
+              min="-1"
+              max="1"
+              step="0.01"
+              value={balance}
+              onChange={handleBalanceChange}
+            />
+            <label htmlFor="balance" className="ml-2">R</label>
           </div>
         </div>
 
