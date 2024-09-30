@@ -16,11 +16,11 @@ export default function Page() {
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.src = currentTrack.src;
-      if (playing) {
-        audioRef.current.play();
-      }
+      audioRef.current.play(); // Começar automaticamente a tocar quando mudar de faixa
+      setPlaying(true); // Garantir que o estado de playing seja verdadeiro após a mudança de faixa
     }
-  }, [currentTrackIndex, playing, currentTrack.src]);
+  }, [currentTrackIndex, currentTrack.src]);
+  
 
   useEffect(() => {
     if (audioRef.current) {
@@ -48,6 +48,7 @@ export default function Page() {
       setPlaying(!playing);
     }
   };
+  
 
   const playNextTrack = () => {
     setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % musicData.length);
